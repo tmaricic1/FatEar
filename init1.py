@@ -1,5 +1,6 @@
 #Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect, flash
+from datetime import datetime
 import pymysql.cursors
 
 #for uploading photo:
@@ -9,17 +10,19 @@ from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
+##get the date
+date = datetime.now()
 
 ###Initialize the app from Flask
-##app = Flask(__name__)
-##app.secret_key = "secret key"
+app = Flask(__name__)
+app.secret_key = "secret key"
 
 #Configure MySQL
 conn = pymysql.connect(host='localhost',
                        port = 8889,
                        user='root',
                        password='root',
-                       db='test',
+                       db='FatEar',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -80,6 +83,11 @@ def loginAuth():
     if(data):
         #creates a session for the the user
         #session is a built in
+        cursor = conn.cursor()
+        ins = 'UPDATE user SET lastlogin = %s WHERE username = %s and password = %s'
+        cursor.execute(ins, (date.strftime("%Y/%m/%d"), username, password))
+        conn.commit()
+        cursor.close()
         session['username'] = username
         return redirect(url_for('home'))
     else:
@@ -93,6 +101,9 @@ def registerAuth():
     #grabs information from the forms
     username = request.form['username']
     password = request.form['password']
+    fname = request.form['fname']
+    lname = request.form['lname']
+    nickname = request.form['nickname']
 
     #cursor used to send queries
     cursor = conn.cursor()
@@ -108,8 +119,8 @@ def registerAuth():
         error = "This user already exists"
         return render_template('register.html', error = error)
     else:
-        ins = 'INSERT INTO user VALUES(%s, %s)'
-        cursor.execute(ins, (username, password))
+        ins = 'INSERT INTO user VALUES(%s, %s, %s, %s, %s, %s)'
+        cursor.execute(ins, (username, password, fname, lname, date.strftime("%Y/%m/%d"), nickname))
         conn.commit()
         cursor.close()
         return render_template('index.html')
@@ -118,12 +129,12 @@ def registerAuth():
 @app.route('/home')
 def home():
     user = session['username']
-    cursor = conn.cursor();
-    query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
-    cursor.execute(query, (user))
-    data = cursor.fetchall()
-    cursor.close()
-    return render_template('home.html', username=user, posts=data)
+    ##cursor = conn.cursor();
+    ##query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
+    ##cursor.execute(query, (user))
+    ##data = cursor.fetchall()
+    ##cursor.close()
+    return render_template('home.html')
 
         
 @app.route('/post', methods=['GET', 'POST'])
@@ -140,7 +151,7 @@ def post():
 @app.route('/select_blogger')
 def select_blogger():
     #check that user is logged in
-    #username = session['username']
+    username = session['username']
     #should throw exception if username not found
     
     cursor = conn.cursor();
