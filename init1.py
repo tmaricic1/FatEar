@@ -134,9 +134,77 @@ def home():
     ##cursor.execute(query, (user))
     ##data = cursor.fetchall()
     ##cursor.close()
-    return render_template('home.html')
+    return render_template('home.html', username = user)
 
-        
+@app.route('/playlist')
+def playlist():
+    user = session['username']
+    return render_template('playlist.html')
+
+@app.route('/search')
+def search():
+    user = session['username']
+    return render_template('search.html')   
+
+@app.route('/friends')
+def friends():
+    user = session['username']
+    return render_template('friends.html')
+
+@app.route('/byArtist')
+def byArtist():
+    user = session['username']
+    return render_template('byArtist.html')
+
+@app.route('/showArtist', methods=['GET', 'POST'])
+def showArtist():
+    name = request.form['info']
+    cursor = conn.cursor()
+    fullname = name.split()
+    if len(fullname) == 1:
+        fname = fullname[0]
+        query = 'SELECT title, fname, lname, albumTitle FROM (song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist  WHERE fname = %s'
+        cursor.execute(query, fname)
+        data = cursor.fetchall()
+    else:
+        fname = fullname[0]
+        lname = fullname[1]
+        query = 'SELECT title, fname, lname, albumTitle FROM (song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist WHERE fname = %s AND lname = %s'
+        cursor.execute(query, (fname, lname))
+        data = cursor.fetchall()
+    cursor.close()
+    return render_template('showArtist.html', name = name, names = data)
+
+@app.route('/byRating')
+def byRating():
+    user = session['username']
+    return render_template('byRating.html')  
+
+@app.route('/showRating', methods=['GET', 'POST'])
+def showRating():
+    stars = request.form['info']
+    cursor = conn.cursor()
+    query = 'SELECT title, fname, lname, albumTitle FROM ((song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist) JOIN rateSong USING (songID)  WHERE stars = %s'
+    cursor.execute(query, int(stars))
+    data = cursor.fetchall()
+    cursor.close()
+    return render_template('showRating.html', stars = stars, results = data)
+
+@app.route('/byGenre')
+def byGenre():
+    user = session['username']
+    return render_template('byGenre.html')             
+
+@app.route('/showGenre', methods=['GET', 'POST'])
+def showGenre():
+    genre = request.form['info']
+    cursor = conn.cursor()
+    query = 'SELECT title, fname, lname, albumTitle FROM ((song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist) JOIN songGenre USING (songID)  WHERE genre = %s'
+    cursor.execute(query, genre)
+    data = cursor.fetchall()
+    cursor.close()
+    return render_template('showGenre.html', genre = genre, results = data)
+
 @app.route('/post', methods=['GET', 'POST'])
 def post():
     username = session['username']
@@ -170,6 +238,20 @@ def show_posts():
     data = cursor.fetchall()
     cursor.close()
     return render_template('show_posts.html', poster_name=poster, posts=data)
+
+@app.route('/searchMusic', methods=['GET', 'POST'])
+def searchMusic():
+    name = request.form['info']
+    searchType = request.args['searchType']
+    if searchType == 'Artist':
+        cursor = conn.cursor()
+        fullname = name.split()
+        fname = fullname[0]
+        lname = fullname[1]
+        query = 'SELECT fname,lname FROM artist WHERE fname LIKE %s OR lname LIKE %s'
+        cursor.execute(query, (fname, lname))
+        data = cursor.fetchall()
+        return render_template('search.html', searchType, results = data)
 
 
 def allowed_file(filename):

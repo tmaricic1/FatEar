@@ -1,0 +1,24 @@
+<style type="text/css">
+    table,
+    th,
+    td {
+      border: 1px solid black;
+    }
+  </style>
+
+  Here are songs by {{name}}:
+
+  <table>
+    <th>Title</th>
+    <th>Artist</th>
+    <th>Album</th>
+
+    {% for line in names %}
+    <tr>
+      <td>{{line.title}}</td>
+      <td>{{line.fname}} {{line.lname}}</td>
+      <td>{{line.albumTitle}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</form>
