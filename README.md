@@ -7,4 +7,4 @@ But that's not all! FatEar also offers a music streaming experience that will ha
 
 And don't forget about our innovative "profile playlist" feature, which allows you to share your terrible taste in music with the world. You'll be the envy of all your friends (or not, we can't promise anything).
 
-So what are you waiting for? Sign up for SoundTweet today and start wasting your time like never before. Your ears and your sanity will thank you. (Note: they probably won't actually thank you).
+So what are you waiting for? Sign up for FatEar today and start wasting your time like never before. Your ears and your sanity will thank you. (Note: they probably won't actually thank you).
