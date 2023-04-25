@@ -83,11 +83,11 @@ def loginAuth():
     if(data):
         #creates a session for the the user
         #session is a built in
-        cursor = conn.cursor()
-        ins = 'UPDATE user SET lastlogin = %s WHERE username = %s and password = %s'
-        cursor.execute(ins, (date.strftime("%Y/%m/%d"), username, password))
-        conn.commit()
-        cursor.close()
+        #cursor = conn.cursor()
+        #ins = 'UPDATE user SET lastlogin = %s WHERE username = %s and password = %s'
+        #cursor.execute(ins, (date.strftime("%Y/%m/%d"), username, password))
+        #conn.commit()
+        #cursor.close()
         session['username'] = username
         return redirect(url_for('home'))
     else:
@@ -129,12 +129,31 @@ def registerAuth():
 @app.route('/home')
 def home():
     user = session['username']
-    ##cursor = conn.cursor();
-    ##query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
-    ##cursor.execute(query, (user))
-    ##data = cursor.fetchall()
-    ##cursor.close()
-    return render_template('home.html', username = user)
+    cursor = conn.cursor()
+    query = 'SELECT lastlogin FROM user WHERE username = %s'
+    cursor.execute(query, user)
+    date = cursor.fetchone()
+    cursor.close()
+    cursor = conn.cursor()
+    query = 'SELECT title, reviewText, username FROM (reviewSong NATURAL JOIN song) NATURAL JOIN (SELECT DISTINCT username FROM (SELECT * FROM (SELECT user1 AS username FROM friend WHERE user2 = %s AND acceptStatus = "Accepted") AS t1 UNION (SELECT user2 AS username FROM friend WHERE user1 = %s AND acceptStatus = "Accepted")) AS s1 UNION (SELECT follows as username FROM follows WHERE follower = %s)) as r1 WHERE reviewDate >= %s'
+    cursor.execute(query, (user, user, user, date['lastlogin'].strftime('%Y-%m-%d')))
+    data = cursor.fetchall()
+    cursor.close()
+
+    cursor = conn.cursor()
+    query = 'SELECT title, fname, lname, releaseDate FROM (SELECT artistID FROM userFanOfArtist WHERE username = %s) as t1 NATURAL JOIN artistPerformsSong NATURAL JOIN song NATURAL JOIN artist WHERE releaseDate >= %s'
+    cursor.execute(query, (user, date['lastlogin'].strftime('%Y-%m-%d')))
+    data2 = cursor.fetchall()
+
+    #might want to confirm password in the below query
+    date = datetime.now()
+    cursor = conn.cursor()
+    ins = 'UPDATE user SET lastlogin = %s WHERE username = %s'
+    cursor.execute(ins, (date.strftime("%Y/%m/%d"), user))
+    conn.commit()
+
+    cursor.close()
+    return render_template('home.html', user = user, reviews = data, songs = data2) 
 
 @app.route('/playlist')
 def playlist():

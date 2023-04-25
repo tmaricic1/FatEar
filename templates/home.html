@@ -1,10 +1,39 @@
 <html>
   <head> </head>
   <body>
-    <h1 style="text-align: center">Welcome {{username}}</h1>
+    <h1 style="text-align: center">Welcome {{user}}</h1>
     <a href="/playlist">Playlists</a>
-    <a href="/search">Search</a>
     <a href="/friends">Freinds</a>
+    <br />
+    <h1>New Song Reviews by Friends</h1>
+    <table>
+      <th>User</th>
+      <th>Song</th>
+      <th>Review</th>
+
+      {% for line in reviews %}
+      <tr>
+        <td>{{line.username}}</td>
+        <td>{{line.title}}</td>
+        <td>"{{line.reviewText}}"</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <h1>New Songs by Your Favorite Artists</h1>
+    <table>
+      <th>Artist</th>
+      <th>Song</th>
+      <th>Release Date</th>
+
+      {% for line in songs %}
+      <tr>
+        <td>{{line.fname}} {{line.lnmae}}</td>
+        <td>{{line.title}}</td>
+        <td>"{{line.releaseDate}}"</td>
+      </tr>
+      {% endfor %}
+    </table>
     <!-- <form action="/post" method="POST">
 	<h1>Welcome {{username}}</h1> 
 	<input type="text" name = "blog" placeholder="post" required/> </br>
