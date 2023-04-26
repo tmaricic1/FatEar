@@ -1,7 +1,79 @@
 <html>
 <head>
+	<style>
+body {
+  margin: auto;
+  padding: 0;
+  background-color: #f6f6f6;
+  font-family: Arial, sans-serif;
+}
+
+#login {
+  width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  color: #333;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+input[type="submit"] {
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #444;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+  text-align: center;
+  margin-top: 10px;
+}
+
+a:hover {
+  color: #444;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+	</style>
 </head>
 <body>
+	<div id="login">
 <form action="/loginAuth" method="POST">
 	<input type="text" name = "username" placeholder="username" required/> </br>
 	<input type="password" name = "password" placeholder="password" required/></br>
@@ -10,8 +82,7 @@
 		<p class="error"><strong>Error:</strong> {{error}}</p>
 	{% endif %}
 </form>
-
-<a href="/">Go back</a>
+</div>
 
 </body>
 

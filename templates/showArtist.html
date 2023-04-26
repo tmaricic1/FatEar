@@ -1,13 +1,26 @@
 <style type="text/css">
-    table,
-    th,
-    td {
-      border: 1px solid black;
-    }
-  </style>
+  #info {
+    border-radius: 5px;
+    overflow-x: auto;
+    text-align: center;
+  }
+  table {
+    width: 80%;
+    margin: 0 auto 20px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
 
-  Here are songs by {{name}}:
+  th,
+  td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid;
+  }
+</style>
 
+<h2 style="text-align: center">Here are songs by {{name}}:</h2>
+<div id="info">
   <table>
     <th>Title</th>
     <th>Artist</th>
@@ -21,4 +34,4 @@
     </tr>
     {% endfor %}
   </table>
-</form>
+</div>

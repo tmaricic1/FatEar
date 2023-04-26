@@ -162,7 +162,6 @@ def playlist():
 
 @app.route('/search')
 def search():
-    user = session['username']
     return render_template('search.html')   
 
 @app.route('/friends')
@@ -172,7 +171,6 @@ def friends():
 
 @app.route('/byArtist')
 def byArtist():
-    user = session['username']
     return render_template('byArtist.html')
 
 @app.route('/showArtist', methods=['GET', 'POST'])
@@ -196,7 +194,6 @@ def showArtist():
 
 @app.route('/byRating')
 def byRating():
-    user = session['username']
     return render_template('byRating.html')  
 
 @app.route('/showRating', methods=['GET', 'POST'])
@@ -211,7 +208,6 @@ def showRating():
 
 @app.route('/byGenre')
 def byGenre():
-    user = session['username']
     return render_template('byGenre.html')             
 
 @app.route('/showGenre', methods=['GET', 'POST'])

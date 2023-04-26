@@ -1,12 +1,50 @@
 <!DOCTYPE html>
 <html>
-  <head> </head>
+  <head>
+    <link rel="stylesheet" href="/style/main.css" />
+    <style>
+      body {
+        margin: 0;
+      }
+      #header {
+        text-align: center;
+        padding: 60px;
+        margin-left: 0;
+        font-size: 100px;
+        background-color: aquamarine;
+      }
+      #navBar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: aquamarine;
+        border: 10px, aqua;
+      }
+      a {
+        display: inline-block;
+        margin: 0 10px;
+        padding: 10px;
+        font-size: 18px;
+        color: black;
+        border-radius: 5px;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
 
+      a:hover {
+        background-color: teal;
+      }
+    </style>
+  </head>
   <body>
-    <a href="/login">Login</a>
-    <br />
-    <a href="/register">Register</a>
-    <br />
-    <a href="/search">Search</a>
+    <div id="header">Fat Ear</div>
+    <div id="navBar">
+      <a href="/register">Register</a>
+      <br />
+      <a href="/search">Search</a>
+      <br />
+      <a href="/login">Login</a>
+    </div>
   </body>
 </html>

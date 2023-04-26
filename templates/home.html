@@ -1,39 +1,99 @@
 <html>
-  <head> </head>
+  <head>
+    <style>
+      body {
+        margin: 0;
+      }
+      #header {
+        text-align: center;
+        padding: 30px;
+        margin-left: 0;
+        font-size: 30px;
+        background-color: aquamarine;
+      }
+      #navBar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: aquamarine;
+        border: 10px, aqua;
+      }
+      a {
+        display: inline-block;
+        margin: 0 10px;
+        padding: 10px;
+        font-size: 18px;
+        color: black;
+        border-radius: 5px;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+      a:hover {
+        background-color: teal;
+      }
+      #info {
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+        text-align: center;
+      }
+      table {
+        width: 80%;
+        margin: 0 auto 20px auto;
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: center;
+        border-bottom: 1px solid black;
+        font-weight: normal;
+      }
+    </style>
+  </head>
   <body>
-    <h1 style="text-align: center">Welcome {{user}}</h1>
-    <a href="/playlist">Playlists</a>
-    <a href="/friends">Freinds</a>
-    <br />
-    <h1>New Song Reviews by Friends</h1>
-    <table>
-      <th>User</th>
-      <th>Song</th>
-      <th>Review</th>
+    <div id="header"><h1 style="text-align: center">Welcome {{user}}</h1></div>
+    <div id="navBar">
+      <a href="/logout">Logout</a>
+      <a href="/playlist">Playlists</a>
+      <a href="/search">Search</a>
+      <a href="/friends">Freinds</a>
+    </div>
+    <div id="info">
+      <br />
+      <h1>New Song Reviews by Friends</h1>
+      <table>
+        <th>User</th>
+        <th>Song</th>
+        <th>Review</th>
 
-      {% for line in reviews %}
-      <tr>
-        <td>{{line.username}}</td>
-        <td>{{line.title}}</td>
-        <td>"{{line.reviewText}}"</td>
-      </tr>
-      {% endfor %}
-    </table>
+        {% for line in reviews %}
+        <tr>
+          <td>{{line.username}}</td>
+          <td>{{line.title}}</td>
+          <td>"{{line.reviewText}}"</td>
+        </tr>
+        {% endfor %}
+      </table>
 
-    <h1>New Songs by Your Favorite Artists</h1>
-    <table>
-      <th>Artist</th>
-      <th>Song</th>
-      <th>Release Date</th>
+      <h1>New Songs by Your Favorite Artists</h1>
+      <table>
+        <th>Artist</th>
+        <th>Song</th>
+        <th>Release Date</th>
 
-      {% for line in songs %}
-      <tr>
-        <td>{{line.fname}} {{line.lnmae}}</td>
-        <td>{{line.title}}</td>
-        <td>"{{line.releaseDate}}"</td>
-      </tr>
-      {% endfor %}
-    </table>
+        {% for line in songs %}
+        <tr>
+          <td>{{line.fname}} {{line.lnmae}}</td>
+          <td>{{line.title}}</td>
+          <td>"{{line.releaseDate}}"</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
     <!-- <form action="/post" method="POST">
 	<h1>Welcome {{username}}</h1> 
 	<input type="text" name = "blog" placeholder="post" required/> </br>

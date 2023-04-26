@@ -1,3 +1,36 @@
+<style>
+  form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 300px;
+    max-width: 100%;
+    margin-right: 10px;
+  }
+
+  input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #444;
+  }
+</style>
 <form style="text-align: center" action="/showArtist" method="POST">
   <input type="text" name="info" placeholder="search" required />
   <input type="submit" value="submit" />
