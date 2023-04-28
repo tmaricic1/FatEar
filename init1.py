@@ -1,6 +1,8 @@
 #Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect, flash
 from datetime import datetime
+import hashlib
+from passlib.hash import sha256_crypt
 import pymysql.cursors
 
 #for uploading photo:
@@ -73,23 +75,28 @@ def loginAuth():
     #cursor used to send queries
     cursor = conn.cursor()
     #executes query
-    query = 'SELECT * FROM user WHERE username = %s and password = %s'
-    cursor.execute(query, (username, password))
+    query = 'SELECT * FROM user WHERE username = %s'
+    cursor.execute(query, username)
     #stores the results in a variable
     data = cursor.fetchone()
     #use fetchall() if you are expecting more than 1 data row
     cursor.close()
     error = None
     if(data):
-        #creates a session for the the user
-        #session is a built in
-        #cursor = conn.cursor()
-        #ins = 'UPDATE user SET lastlogin = %s WHERE username = %s and password = %s'
-        #cursor.execute(ins, (date.strftime("%Y/%m/%d"), username, password))
-        #conn.commit()
-        #cursor.close()
-        session['username'] = username
-        return redirect(url_for('home'))
+        cursor = conn.cursor()
+        query = 'SELECT password FROM user WHERE username = %s'
+        cursor.execute(query, username)
+        result = cursor.fetchone()
+        db_password = result['password']
+        cursor.close()
+        salt = "salt"
+        verify_password = salt+password
+        if sha256_crypt.verify(verify_password, db_password):
+             session['username'] = username
+             return redirect(url_for('home'))
+        else:
+            error = 'Invalid password'
+            return render_template('login.html', error=error)
     else:
         #returns an error message to the html page
         error = 'Invalid login or username'
@@ -120,7 +127,10 @@ def registerAuth():
         return render_template('register.html', error = error)
     else:
         ins = 'INSERT INTO user VALUES(%s, %s, %s, %s, %s, %s)'
-        cursor.execute(ins, (username, password, fname, lname, date.strftime("%Y/%m/%d"), nickname))
+        salt = "salt"
+        salted_password = salt+password
+        encrypted_password = sha256_crypt.hash(salted_password)
+        cursor.execute(ins, (username, encrypted_password, fname, lname, date.strftime("%Y/%m/%d"), nickname))
         conn.commit()
         cursor.close()
         return render_template('index.html')
