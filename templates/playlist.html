@@ -25,13 +25,31 @@
         letter-spacing: 2px;
         color: #333;
       }
+      .button {
+        display: inline-block;
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-bottom: 20px;
+      }
+      .button:hover {
+        background-color: #666;
+      }
     </style>
   </head>
   <body>
     <a href="/home">Go Back</a>
     <div class="container">
       <h1>"Playlist"</h1>
+      <a href="/create-playlist" class="button">Create Playlist</a>
       <!-- Add your content here -->
+      <ul>
+        {% for line in playlists %}
+          <li>{{ line.pName }} - {{ line.description }}</li>
+        {% endfor %}
+      </ul>
     </div>
   </body>
 </html>

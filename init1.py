@@ -165,10 +165,6 @@ def home():
     cursor.close()
     return render_template('home.html', user = user, reviews = data, songs = data2) 
 
-@app.route('/playlist')
-def playlist():
-    user = session['username']
-    return render_template('playlist.html')
 
 @app.route('/search')
 def search():
@@ -306,6 +302,18 @@ def upload_file():
 			flash('Allowed file types are txt, pdf, png, jpg, jpeg, gif')
 			return redirect(request.url)
 
+@app.route('/playlist', methods=['GET', 'POST'])
+def user_playlists():
+    # Retrieve the playlists for the specified user from the database
+    username = session["username"]
+    cursor = conn.cursor()
+    query = "SELECT distinct pName,description FROM playlist WHERE username = %s"
+    cursor.execute(query, username)
+    playlists = cursor.fetchall()
+    cursor.close()
+
+    # Render the "playlists.html" template with the retrieved playlists
+    return render_template('playlist.html', playlists=playlists)
 
 @app.route('/logout')
 def logout():
