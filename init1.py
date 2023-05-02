@@ -315,6 +315,10 @@ def user_playlists():
     # Render the "playlists.html" template with the retrieved playlists
     return render_template('playlist.html', playlists=playlists)
 
+@app.route('/playlistdisplay', methods=['GET', 'POST'])
+def playlistdisplay():
+    return render_template('playlistdisplay.html')
+
 @app.route('/logout')
 def logout():
     session.pop('username')

@@ -40,7 +40,7 @@
     </style>
   </head>
   <body>
-    <a href="/home">Go Back</a>
+    <a href="/home">Home Page</a>
     <div class="container">
       <h1>"Playlist"</h1>
       <a href="/create-playlist" class="button">Create Playlist</a>
@@ -48,7 +48,12 @@
       <ul>
         {% for line in playlists %}
           <li>{{ line.pName }} - {{ line.description }}</li>
+        
+        <form action="/playlistdisplay" method="post">
+          <input type="hidden" name="button_clicked" value= "{{pName}}">
+          <button class = "button" type="submit" >Click Here to View Playlist</button>
         {% endfor %}
+        </form>
       </ul>
     </div>
   </body>
