@@ -90,7 +90,7 @@
 <form action="/playlistcreate" method="POST">
 	<input type="text" name = "pname" placeholder="playlist name" required/> </br>
     <input type="text" name = "description" placeholder="playlist description" required/> </br>
-	<input type="submit" value = playlistcreate />
+	<input type="submit" value = "Create Playlist" />
 	{% if error %}
 		<p class="error"><strong>Error:</strong> {{error}}</p>
 	{% endif %}
