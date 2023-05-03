@@ -326,6 +326,47 @@ def playlistdisplay():
     cursor.close()
     return render_template('playlistdisplay.html',songs = songs)
 
+@app.route('/rateReview')
+def rateReview():
+    return render_template('rateReview.html')
+@app.route('/rateSong')
+def rateSong():
+    return render_template('rateSong.html')
+@app.route('/reviewSong')
+def reviewSong():
+    return render_template('reviewSong.html')
+@app.route('/postRating', methods = ['GET', 'POST'])
+def postRating():
+     username = session["username"]
+     title = request.form['songTitle']
+     rating = request.form['songRating']
+     date = datetime.now()
+     cursor = conn.cursor()
+     query = 'SELECT songID FROM song WHERE title = %s'
+     cursor.execute(query, title)
+     ID = cursor.fetchone()
+     ins = 'INSERT INTO rateSong VALUES (%s, %s, %s, %s)'
+     cursor.execute(ins, (username, ID['songID'], rating, date.strftime("%Y/%m/%d")))
+     conn.commit()
+     cursor.close()
+     return redirect('/home')
+@app.route('/postReview', methods = ['GET', 'POST'])
+def postReview():
+     username = session["username"]
+     title = request.form['songTitle']
+     review = request.form['songReview']
+     date = datetime.now()
+     cursor = conn.cursor()
+     query = 'SELECT songID FROM song WHERE title = %s'
+     cursor.execute(query, title)
+     ID = cursor.fetchone()
+     ins = 'INSERT INTO reviewSong VALUES (%s, %s, %s, %s)'
+     cursor.execute(ins, (username, ID['songID'], review, date.strftime("%Y/%m/%d")))
+     conn.commit()
+     cursor.close()
+     return redirect('/home')
+
+
 @app.route('/logout')
 def logout():
     session.pop('username')
