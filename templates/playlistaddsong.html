@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Playlist</title>
+    <title>Displaying Your Playlist</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -34,15 +34,6 @@
         text-decoration: none;
         margin-bottom: 20px;
       }
-      .smallbutton {
-        display: inline-block;
-        background-color: #333;
-        color: #fff;
-        padding: 5px 5px;
-        border-radius: 2px;
-        text-decoration: none;
-        margin-bottom: 5px;
-      }
       .button:hover {
         background-color: #666;
       }
@@ -51,19 +42,9 @@
   <body>
     <a href="/home">Home Page</a>
     <div class="container">
-      <h1>"Playlist"</h1>
-      <a href="/playlistcreatepage" class="button">Create Playlist</a>
-      <a href="/playlistaddsong" class="button">Add a song to a Playlist</a>
+      <h1>"Add a song to one of your playlists here eventually"</h1>
+      <a href="/playlist" class="button">Go Back to Playlist Page</a>
       <!-- Add your content here -->
-      <ul>
-        {% for line in playlists %}
-          <li>{{ line.pName }} - {{ line.description }}</li>
-        
-        <form action="/playlistdisplay"  name="take_to_plist" method="post">
-          <input type="submit" name="plist" value="{{line.pName}}">
-        {% endfor %}
-        </form>
-      </ul>
     </div>
   </body>
 </html>

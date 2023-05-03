@@ -319,13 +319,49 @@ def user_playlists():
 def playlistdisplay():
     # Retrieve the songs on the specified playlist for the specified user from the database
     cursor = conn.cursor()
-    playlist = request.form["take_to_plist"]
-    query = "SELECT song.title FROM songInPlaylist NATURAL JOIN song WHERE songInPlaylist.pName = %s"
+    playlist = request.form["plist"]
+    query = 'SELECT pname FROM playlist WHERE pname = %s'
+    cursor.execute(query, playlist)
+    pname = cursor.fetchone()
+    query = "SELECT song.title FROM songInPlaylist NATURAL JOIN song WHERE pName = %s"
     cursor.execute(query, playlist)
     songs = cursor.fetchall()
     cursor.close()
+    print(pname['pname'])
     return render_template('playlistdisplay.html',songs = songs)
 
+@app.route('/playlistcreate', methods=['GET', 'POST'])
+def playlistcreate():
+    username = session["username"]
+    pname = request.form['pname']
+    description = request.form['description']
+    #cursor used to send queries
+    cursor = conn.cursor()
+    #executes query
+    query = 'SELECT * FROM `Playlist` WHERE pName = %s AND username = %s'
+    cursor.execute(query, (pname, username))
+    #stores the results in a variable
+    data = cursor.fetchone()
+    #use fetchall() if you are expecting more than 1 data row
+    error = None
+    if(data):
+        #If the previous query returns data, then playlist Name already exists
+        error = "This playlist name already exists"
+        return render_template('playlistcreate.html', error = error)
+    else:
+        ins = 'INSERT INTO `Playlist` (`pName`, `username`, `description`, `dateCreated`) VALUES(%s, %s,%s,%s)'
+        cursor.execute(ins, (pname,username,description, date.strftime("%Y/%m/%d"),))
+        conn.commit()
+        cursor.close()
+    return redirect('/playlist')
+
+@app.route('/playlistaddsong')
+def playlistaddsong():
+    return render_template('playlistaddsong.html')
+    
+@app.route('/playlistcreatepage')
+def playlistcreatepage():
+    return render_template('playlistcreate.html')
 @app.route('/rateReview')
 def rateReview():
     return render_template('rateReview.html')
