@@ -34,6 +34,15 @@
         text-decoration: none;
         margin-bottom: 20px;
       }
+      .smallbutton {
+        display: inline-block;
+        background-color: #333;
+        color: #fff;
+        padding: 5px 5px;
+        border-radius: 2px;
+        text-decoration: none;
+        margin-bottom: 5px;
+      }
       .button:hover {
         background-color: #666;
       }
@@ -49,9 +58,9 @@
         {% for line in playlists %}
           <li>{{ line.pName }} - {{ line.description }}</li>
         
-        <form action="/playlistdisplay" method="post">
-          <input type="hidden" name="button_clicked" value= "{{pName}}">
-          <button class = "button" type="submit" >Click Here to View Playlist</button>
+        <form action="/playlistdisplay"  name="take_to_plist" method="post">
+          <input type="hidden" name="take_to_plist" value="{{line.pName}}">
+          <button class = "smallbutton" type="submit" >View Playlist</button>
         {% endfor %}
         </form>
       </ul>

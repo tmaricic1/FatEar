@@ -46,8 +46,8 @@
       <a href="/playlist" class="button">Go Back to Playlist Page</a>
       <!-- Add your content here -->
       <ul>
-        {% for line in playlists %}
-          <li>{{ line.pName }} - {{ line.description }}</li>
+        {% for line in songs %}
+          <li>{{ line.title }}</li>
         {% endfor %}
       </ul>
     </div>

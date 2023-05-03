@@ -317,7 +317,14 @@ def user_playlists():
 
 @app.route('/playlistdisplay', methods=['GET', 'POST'])
 def playlistdisplay():
-    return render_template('playlistdisplay.html')
+    # Retrieve the songs on the specified playlist for the specified user from the database
+    cursor = conn.cursor()
+    playlist = request.form["take_to_plist"]
+    query = "SELECT song.title FROM songInPlaylist NATURAL JOIN song WHERE songInPlaylist.pName = %s"
+    cursor.execute(query, playlist)
+    songs = cursor.fetchall()
+    cursor.close()
+    return render_template('playlistdisplay.html',songs = songs)
 
 @app.route('/logout')
 def logout():
