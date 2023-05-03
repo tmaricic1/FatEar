@@ -358,6 +358,37 @@ def playlistcreate():
 @app.route('/playlistaddsong')
 def playlistaddsong():
     return render_template('playlistaddsong.html')
+
+@app.route('/playlistaddsongSearch', methods=['GET', 'POST'])
+def playlistaddsongSearch():
+    username = session["username"]
+    pname = request.form['pname']
+    sname = request.form['sname']
+    #cursor used to send queries
+    cursor = conn.cursor()
+    #executes query
+    query = 'SELECT * FROM songInPlaylist NATURAL JOIN song WHERE title = %s AND pName = %s'
+    cursor.execute(query, (sname, pname))
+    #stores the results in a variable
+    data = cursor.fetchone()
+    #use fetchall() if you are expecting more than 1 data row
+    error = None
+    if(data):
+        #If the previous query returns data, then playlist Name already exists
+        error = "This song is already on this playlist"
+        return render_template('playlistaddsong.html', error = error)
+    else:
+        songidq = 'SELECT songID FROM `song` WHERE title = %s'
+        cursor.execute(songidq,(sname))
+        songid = cursor.fetchone()
+        ins = 'INSERT INTO `songInPlaylist` (`pName`, `songID`, `username`) VALUES (%s, %s, %s)'
+        print(songid)
+        print(pname)
+        print(username)
+        cursor.execute(ins, (pname,songid['songID'],username))
+        conn.commit()
+        cursor.close()
+    return redirect('/playlist')
     
 @app.route('/playlistcreatepage')
 def playlistcreatepage():
