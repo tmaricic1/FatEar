@@ -340,14 +340,28 @@ def postRating():
      username = session["username"]
      title = request.form['songTitle']
      rating = request.form['songRating']
+     if int(rating) < 0 or int(rating) > 5:
+          error = 'invalid rating'
+          return render_template('rateSong.html', error = error)
      date = datetime.now()
      cursor = conn.cursor()
      query = 'SELECT songID FROM song WHERE title = %s'
      cursor.execute(query, title)
-     ID = cursor.fetchone()
-     ins = 'INSERT INTO rateSong VALUES (%s, %s, %s, %s)'
-     cursor.execute(ins, (username, ID['songID'], rating, date.strftime("%Y/%m/%d")))
-     conn.commit()
+     songID = cursor.fetchone()
+     if not songID:
+        error = "No song with this name"
+        return render_template('rateSong.html', error = error)
+     query = 'SELECT * FROM rateSong WHERE songID = %s and username = %s'
+     cursor.execute(query, (songID['songID'], username))
+     entry = cursor.fetchone()
+     if (entry):
+        error = 'You already rated this song'
+        return render_template('reviewSong.html', error = error)
+     elif(songID):
+        ins = 'INSERT INTO rateSong VALUES (%s, %s, %s, %s)'
+        cursor.execute(ins, (username, songID['songID'], rating, date.strftime("%Y/%m/%d")))
+        conn.commit()
+
      cursor.close()
      return redirect('/home')
 @app.route('/postReview', methods = ['GET', 'POST'])
@@ -359,10 +373,21 @@ def postReview():
      cursor = conn.cursor()
      query = 'SELECT songID FROM song WHERE title = %s'
      cursor.execute(query, title)
-     ID = cursor.fetchone()
-     ins = 'INSERT INTO reviewSong VALUES (%s, %s, %s, %s)'
-     cursor.execute(ins, (username, ID['songID'], review, date.strftime("%Y/%m/%d")))
-     conn.commit()
+     songID = cursor.fetchone()
+     if not songID:
+        error = "No song with this name"
+        return render_template('rateSong.html', error = error)
+     query = 'SELECT * FROM reviewSong WHERE songID = %s and username = %s'
+     cursor.execute(query, (songID['songID'], username))
+     entry = cursor.fetchone()
+     if (entry):
+        error = 'You already reviewed this song'
+        return render_template('reviewSong.html', error = error)
+     elif (songID):
+        ins = 'INSERT INTO reviewSong VALUES (%s, %s, %s, %s)'
+        cursor.execute(ins, (username, songID['songID'], review, date.strftime("%Y/%m/%d")))
+        conn.commit()
+
      cursor.close()
      return redirect('/home')
 

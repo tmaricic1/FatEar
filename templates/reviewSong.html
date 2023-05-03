@@ -30,9 +30,17 @@
   input[type="submit"]:hover {
     background-color: #444;
   }
+  .error {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+  }
 </style>
 <form style="text-align: center" action="/postReview" method="POST">
   <input type="text" name="songTitle" placeholder="Song Title" required />
   <input type="text" name="songReview" placeholder="Review" required />
   <input type="submit" value="submit" />
+  {% if error %}
+  <p class="error"><strong>Error:</strong> {{error}}</p>
+  {% endif %}
 </form>
