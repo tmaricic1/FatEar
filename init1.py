@@ -244,6 +244,51 @@ def addFriendSearch():
     cursor.close()
     return redirect('/friends', code=302)
 
+@app.route('/followers')
+def followers():
+    user = session['username']
+    cursor = conn.cursor()
+    query = ' SELECT follower FROM follows WHERE follows = %s'
+    cursor.execute(query, (user))
+    pplWhoFollowYou = cursor.fetchall()
+
+    query = ' SELECT follows FROM follows WHERE follower = %s'
+    cursor.execute(query, (user))
+    pplWhoYouFollow = cursor.fetchall()
+
+    cursor.close()
+    return render_template('followers.html', pplWhoFollowYou = pplWhoFollowYou, pplWhoYouFollow = pplWhoYouFollow, user = user)
+
+@app.route('/followSearch', methods=['GET', 'POST'])
+def followSearch():
+    user = session["username"]
+    fuser = request.form['username']
+    #cursor used to send queries
+    cursor = conn.cursor()
+    #executes query
+    query = 'SELECT * FROM user WHERE username = %s'
+    cursor.execute(query, fuser)
+    exists = cursor.fetchone()
+    if not exists:
+        flash("User does not exist")
+        return redirect('/followers', code = 302)
+    else:
+        query = 'SELECT * FROM follows WHERE follower = %s AND follows = %s'
+        cursor.execute(query, (user, fuser))
+    #stores the results in a variable
+        data = cursor.fetchone()
+    #use fetchall() if you are expecting more than 1 data row
+        if(data):
+        #If the previous query returns data, then playlist Name already exists
+            flash("You already follow this user")
+            return redirect('/followers', code = 302)
+        else:
+                insert = 'INSERT INTO follows VALUES (%s, %s, CURRENT_TIME())'
+                cursor.execute(insert, (user, fuser))
+    conn.commit()
+    cursor.close()
+    return redirect('/followers', code=302)
+
 
 @app.route('/byArtist')
 def byArtist():

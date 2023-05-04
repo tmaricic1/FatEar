@@ -93,7 +93,7 @@
         background-color: #666;
       }
 
-#addFriendSearch {
+#followSearch {
   margin: 50px auto;
   padding: 20px;
   width: 400px;
@@ -103,8 +103,8 @@
   font-family: Arial, sans-serif;
 }
 
-#addFriendSearch input[type="text"],
-#addFriendSearch input[type="submit"] {
+#followSearch input[type="text"],
+#followSearch input[type="submit"] {
   display: block;
   margin-bottom: 10px;
   padding: 10px;
@@ -115,30 +115,30 @@
   color: #555;
 }
 
-#addFriendSearch input[type="submit"] {
+#followSearch input[type="submit"] {
   background-color: #444;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-#addFriendSearch input[type="submit"]:hover {
+#followSearch input[type="submit"]:hover {
   background-color: #444;
 }
     </style>
   </head>
   <body>
-    <div id="header"><h1 style="text-align: center">{{user}}'s Friends</h1></div>
+    <div id="header"><h1 style="text-align: center">{{user}}'s Followers & Follows</h1></div>
     <div id="navBar">
       <a href="/logout">Logout</a>
       <a href="/playlist">Playlists</a>
       <a href="/search">Search</a>
-      <a href="/followers">Followers</a>
+      <a href="/friends">Friends</a>
     </div>
-    <div id="addfriendSearch">
-        <form action="/addFriendSearch" method="POST">
+    <div id="followSearch">
+        <form action="/followSearch" method="POST">
             <input type="text" name = "username" placeholder="username" required/> </br>
-            <input type="submit" value = "Add Friend" />
+            <input type="submit" value = "Follow User" />
             {% if error %}
                 <p class="error"><strong>Error:</strong> {{error}}</p>
             {% endif %}
@@ -154,56 +154,37 @@
             {% endwith %}
             
         </div>
-    <div id="info">
       <br />
 
-      <h1>Pending Friend Requests</h1>
+      
+
+      <h1 style="text-align: center;">Following</h1>
       <table>
         <th>Username</th>
         
 
-        {% for line in pend %}
+        {% for line in pplWhoYouFollow %}
         <tr>
-          <td>{{line.user1}}</td>
-          <td>
-            <a href={{url_for('acceptFriend', user1=line.user1, user2=user)}}>
-                <button>Accept</button>
-            </a>
-          </td>
-          <td>
-            <a href={{url_for('declineFriend', user1=line.user1, user2=user)}}>
-                <button>Decline</button>
-            </a>
-          </td>
+          <td>{{line.follows}}</td>
         </tr>
         {% endfor %}
       </table>
 
-      <h1>Friend Requests Sent, Awaiting Response</h1>
+      <h1 style="text-align: center;">Followers</h1>
       <table>
         <th>Username</th>
         
 
-        {% for line in unaccepted %}
+        {% for line in pplWhoFollowYou %}
         <tr>
-          <td>{{line.user1}}</td>
-        </tr>
-        {% endfor %}
-      </table>
-
-      <h1>Friends</h1>
-      <table>
-        <th>Username</th>
-        
-
-        {% for line in friends %}
-        <tr>
-          <td>{{line.user1}}</td>
+          <td>{{line.follower}}</td>
         </tr>
         {% endfor %}
       </table>
 
     </div>
+
+    
     
   </body>
 </html>
