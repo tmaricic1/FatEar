@@ -256,13 +256,13 @@ def showArtist():
     fullname = name.split()
     if len(fullname) == 1:
         fname = fullname[0]
-        query = 'SELECT title, fname, lname, albumTitle FROM (song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist  WHERE fname = %s'
+        query = 'SELECT title, fname, lname, albumTitle, songURL FROM (song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist  WHERE fname = %s'
         cursor.execute(query, fname)
         data = cursor.fetchall()
     else:
         fname = fullname[0]
         lname = fullname[1]
-        query = 'SELECT title, fname, lname, albumTitle FROM (song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist WHERE fname = %s AND lname = %s'
+        query = 'SELECT title, fname, lname, albumTitle, songURL FROM (song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist WHERE fname = %s AND lname = %s'
         cursor.execute(query, (fname, lname))
         data = cursor.fetchall()
     cursor.close()
@@ -276,9 +276,10 @@ def byRating():
 def showRating():
     stars = request.form['info']
     cursor = conn.cursor()
-    query = 'SELECT title, fname, lname, albumTitle FROM ((song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist) JOIN rateSong USING (songID)  WHERE stars = %s'
+    query = 'SELECT title, fname, lname, albumTitle, songURL FROM ((song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist) JOIN rateSong USING (songID)  WHERE stars = %s'
     cursor.execute(query, int(stars))
     data = cursor.fetchall()
+    print(data)
     cursor.close()
     return render_template('showRating.html', stars = stars, results = data)
 
@@ -290,7 +291,7 @@ def byGenre():
 def showGenre():
     genre = request.form['info']
     cursor = conn.cursor()
-    query = 'SELECT title, fname, lname, albumTitle FROM ((song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist) JOIN songGenre USING (songID)  WHERE genre = %s'
+    query = 'SELECT title, fname, lname, albumTitle, songURL FROM ((song NATURAL JOIN songInAlbum NATURAL JOIN album) NATURAL JOIN artistPerformsSong NATURAL JOIN artist) JOIN songGenre USING (songID)  WHERE genre = %s'
     cursor.execute(query, genre)
     data = cursor.fetchall()
     cursor.close()

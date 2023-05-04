@@ -25,12 +25,14 @@
     <th>Title</th>
     <th>Artist</th>
     <th>Album</th>
+    <th>URL</th>
 
     {% for line in names %}
     <tr>
       <td>{{line.title}}</td>
       <td>{{line.fname}} {{line.lname}}</td>
       <td>{{line.albumTitle}}</td>
+      <td><a href="{{line.songURL}}">{{line.songURL}}</a></td>
     </tr>
     {% endfor %}
   </table>
