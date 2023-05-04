@@ -174,16 +174,16 @@ def search():
 def friends():
     user = session['username']
     cursor = conn.cursor()
-    query = 'WITH friend_pairs AS (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and acceptStatus = "accepted") (SELECT user1 FROM friend_pairs WHERE user1 != %s UNION (SELECT user2 FROM friend_pairs WHERE user2 != %s))'
-    cursor.execute(query, (user, user, user, user))
+    query = ' SELECT user1 FROM (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and acceptStatus = "accepted") as friend_pairs WHERE user1 != %s UNION (SELECT user2 FROM (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and acceptStatus = "accepted") as friend_pairs WHERE user2 != %s)'
+    cursor.execute(query, (user, user, user, user, user, user))
     data = cursor.fetchall()
 
-    query = 'WITH friend_pairs AS (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and requestSentBy != %s and acceptStatus = "Pending") (SELECT user1 FROM friend_pairs WHERE user1 != %s UNION (SELECT user2 FROM friend_pairs WHERE user2 != %s))'
-    cursor.execute(query, (user, user, user, user, user))
+    query = 'SELECT user1 FROM (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and requestSentBy != %s and acceptStatus = "Pending") AS friend_pairs WHERE user1 != %s UNION (SELECT user2 FROM (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and requestSentBy != %s and acceptStatus = "Pending") AS friend_pairs WHERE user2 != %s)'
+    cursor.execute(query, (user, user, user, user, user, user, user, user))
     pend = cursor.fetchall()
 
-    query = 'WITH friend_pairs AS (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and requestSentBy = %s and acceptStatus = "Pending") (SELECT user1 FROM friend_pairs WHERE user1 != %s UNION (SELECT user2 FROM friend_pairs WHERE user2 != %s))'
-    cursor.execute(query, (user, user, user, user, user))
+    query = 'SELECT user1 FROM (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and requestSentBy = %s and acceptStatus = "Pending") AS friend_pairs WHERE user1 != %s UNION (SELECT user2 FROM (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and requestSentBy = %s and acceptStatus = "Pending") AS friend_pairs WHERE user2 != %s)'
+    cursor.execute(query, (user, user, user, user, user, user, user, user))
     unaccepted = cursor.fetchall()
 
     cursor.close()
