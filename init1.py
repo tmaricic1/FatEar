@@ -173,7 +173,77 @@ def search():
 @app.route('/friends')
 def friends():
     user = session['username']
-    return render_template('friends.html')
+    cursor = conn.cursor()
+    query = 'WITH friend_pairs AS (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and acceptStatus = "accepted") (SELECT user1 FROM friend_pairs WHERE user1 != %s UNION (SELECT user2 FROM friend_pairs WHERE user2 != %s))'
+    cursor.execute(query, (user, user, user, user))
+    data = cursor.fetchall()
+
+    query = 'WITH friend_pairs AS (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and requestSentBy != %s and acceptStatus = "Pending") (SELECT user1 FROM friend_pairs WHERE user1 != %s UNION (SELECT user2 FROM friend_pairs WHERE user2 != %s))'
+    cursor.execute(query, (user, user, user, user, user))
+    pend = cursor.fetchall()
+
+    query = 'WITH friend_pairs AS (SELECT user1, user2 FROM friend WHERE (user1 = %s or user2 = %s) and requestSentBy = %s and acceptStatus = "Pending") (SELECT user1 FROM friend_pairs WHERE user1 != %s UNION (SELECT user2 FROM friend_pairs WHERE user2 != %s))'
+    cursor.execute(query, (user, user, user, user, user))
+    unaccepted = cursor.fetchall()
+
+    cursor.close()
+    return render_template('friends.html', friends = data, pend = pend, unaccepted = unaccepted, user = user)
+
+@app.route('/accept/<user1>/<user2>')
+def acceptFriend(user1, user2):
+    cursor = conn.cursor()
+    update = 'UPDATE friend SET acceptStatus = "Accepted", updatedAt = CURRENT_TIME()  WHERE (user1 = %s and user2 = %s) or (user1 = %s and user2 = %s);'
+    cursor.execute(update, (user1, user2, user2, user1))
+    cursor.close()
+    return redirect("/friends", code=302)
+
+@app.route('/decline/<user1>/<user2>')
+def declineFriend(user1, user2):
+    cursor = conn.cursor()
+    update = 'UPDATE friend SET acceptStatus = "Not accepted", updatedAt = CURRENT_TIME()  WHERE (user1 = %s and user2 = %s) or (user1 = %s and user2 = %s);'
+    cursor.execute(update, (user1, user2, user2, user1))
+    cursor.close()
+    return redirect("/friends", code=302)
+
+
+@app.route('/addFriendSearch', methods=['GET', 'POST'])
+def addFriendSearch():
+    user = session["username"]
+    fuser = request.form['username']
+    #cursor used to send queries
+    cursor = conn.cursor()
+    #executes query
+    query = 'SELECT * FROM user WHERE username = %s'
+    cursor.execute(query, fuser)
+    exists = cursor.fetchone()
+    if not exists:
+        flash("User does not exist")
+        return redirect('/friends', code = 302)
+    else:
+        query = 'SELECT * FROM friend WHERE (user1 = %s AND user2 = %s) OR (user1 = %s AND user2 = %s) AND acceptStatus = "Accepted"'
+        cursor.execute(query, (user, fuser, fuser, user))
+    #stores the results in a variable
+        data = cursor.fetchone()
+    #use fetchall() if you are expecting more than 1 data row
+        if(data):
+        #If the previous query returns data, then playlist Name already exists
+            flash("You are already friends with this user")
+            return redirect('/friends', code = 302)
+        else:
+            query = 'SELECT * FROM friend WHERE (user1 = %s AND user2 = %s) OR (user1 = %s AND user2 = %s)'
+            cursor.execute(query, (user, fuser, fuser, user))
+    #stores the results in a variable
+            prevInt = cursor.fetchone()
+            if(prevInt):
+                update = 'UPDATE friend SET acceptStatus = "Pending", updatedAt = CURRENT_TIME()  WHERE (user1 = %s and user2 = %s) or (user1 = %s and user2 = %s);'
+                cursor.execute(update, (user, fuser, fuser, user))
+            else:
+                insert = 'INSERT INTO friend VALUES (%s, %s, "Pending", %s, CURRENT_TIME(), NULL)'
+                cursor.execute(insert, (user, fuser, user))
+    conn.commit()
+    cursor.close()
+    return redirect('/friends', code=302)
+
 
 @app.route('/byArtist')
 def byArtist():
